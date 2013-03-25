@@ -30,8 +30,8 @@ CLLocation *userLoc;
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
- 
-        NSLog(@"Here");
+    
+    NSLog(@"Here");
     self.notes = [[NSMutableArray alloc] init];
     [super viewDidLoad];
     UIImage *pattern = [UIImage imageNamed:@"retina_wood.png"];
@@ -51,8 +51,8 @@ CLLocation *userLoc;
     NSEntityDescription *entity = [NSEntityDescription
                                    entityForName:@"DataInfo" inManagedObjectContext:context];
     [fetchRequest setEntity:entity];
-    NSArray *fetchedObjects = [context executeFetchRequest:fetchRequest error:&error];
-    for (NSManagedObject *info in fetchedObjects) {
+    _data = [context executeFetchRequest:fetchRequest error:&error];
+    for (NSManagedObject *info in _data) {
         NSLog(@"Title: %@", [info valueForKey:@"title"]);
         NSLog(@"Text: %@", [info valueForKey:@"text"]);
     }
@@ -73,8 +73,8 @@ CLLocation *userLoc;
     // Save the context.
     NSError *error = nil;
     if (![context save:&error]) {
-         // Replace this implementation with code to handle the error appropriately.
-         // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
+        // Replace this implementation with code to handle the error appropriately.
+        // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
         abort();
     }
@@ -85,13 +85,13 @@ CLLocation *userLoc;
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return 1;
-//    return [[self.fetchedResultsController sections] count];
+    //    return [[self.fetchedResultsController sections] count];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{    return [self.notes count];
-//    id <NSFetchedResultsSectionInfo> sectionInfo = [self.fetchedResultsController sections][section];
-//    return [sectionInfo numberOfObjects];
+{    return [_data count];
+//        id <NSFetchedResultsSectionInfo> sectionInfo = [self.fetchedResultsController sections][section];
+//        return [sectionInfo numberOfObjects];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -100,8 +100,10 @@ CLLocation *userLoc;
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kJECCellIdentifier];
     }
-    JECData *data = self.notes[indexPath.row];
-    cell.textLabel.text = data.title;
+    //JECData *data = self.notes[indexPath.row];
+    //cell.textLabel.text = data.title;
+    NSManagedObject *info = _data[indexPath.row];
+    cell.textLabel.text = [info valueForKey:@"title"];
     return cell;
 }
 
@@ -119,12 +121,12 @@ CLLocation *userLoc;
         
         NSError *error = nil;
         if (![context save:&error]) {
-             // Replace this implementation with code to handle the error appropriately.
-             // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
+            // Replace this implementation with code to handle the error appropriately.
+            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
             NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
             abort();
         }
-    }   
+    }
 }
 
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
@@ -178,14 +180,14 @@ CLLocation *userLoc;
     
 	NSError *error = nil;
 	if (![self.fetchedResultsController performFetch:&error]) {
-	     // Replace this implementation with code to handle the error appropriately.
-	     // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
+        // Replace this implementation with code to handle the error appropriately.
+        // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
 	    NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
 	    abort();
 	}
     
     return _fetchedResultsController;
-}    
+}
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
@@ -238,13 +240,13 @@ CLLocation *userLoc;
 }
 
 /*
-// Implementing the above methods to update the table view in response to individual changes may have performance implications if a large number of changes are made simultaneously. If this proves to be an issue, you can instead just implement controllerDidChangeContent: which notifies the delegate that all section and object changes have been processed. 
+ // Implementing the above methods to update the table view in response to individual changes may have performance implications if a large number of changes are made simultaneously. If this proves to be an issue, you can instead just implement controllerDidChangeContent: which notifies the delegate that all section and object changes have been processed.
  
  - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
-{
-    // In the simplest, most efficient, case, reload the table view.
-    [self.tableView reloadData];
-}
+ {
+ // In the simplest, most efficient, case, reload the table view.
+ [self.tableView reloadData];
+ }
  */
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath

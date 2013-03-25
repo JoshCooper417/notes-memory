@@ -18,6 +18,6 @@
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 - (IBAction)NewNote:(id)sender;
 @property (strong, nonatomic) NSMutableArray *notes;
-
+@property (nonatomic, strong) NSArray *data;
 
 @end
