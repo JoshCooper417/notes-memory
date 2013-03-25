@@ -1,0 +1,1 @@
+Made a field trips app-stores in core memory.
