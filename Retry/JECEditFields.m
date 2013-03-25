@@ -38,9 +38,14 @@ int stage = 0;
                                   otherButtonTitles:nil];
             [alert show];
         }
-//        [_locationManager startUpdatingLocation];
-//        _currentEntry.location = _locationManager.location;
-//        [_locationManager stopUpdatingLocation];
+        [_locationManager startUpdatingLocation];
+        CLLocation *location = _locationManager.location;
+        [_locationManager stopUpdatingLocation];
+        CLLocationCoordinate2D coordinate = location.coordinate;
+        double latitude = coordinate.latitude;
+        [_dataInfo setValue:[NSNumber numberWithDouble: latitude] forKey:@"latitude"];
+        double longitude = coordinate.longitude;
+        [_dataInfo setValue:[NSNumber numberWithDouble: longitude] forKey:@"longitude"];
     }
     return self;
 }
@@ -83,7 +88,6 @@ int stage = 0;
     }
     else{
         [_dataInfo setValue:text forKey:@"text"];
-//        _currentEntry.description = text;
          [_EnterTextField resignFirstResponder];
         [self.navigationController popViewControllerAnimated:YES];
       [_dataInfo setValue:@"Yes" forKey:@"assembled"];

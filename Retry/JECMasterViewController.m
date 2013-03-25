@@ -143,7 +143,7 @@ NSManagedObject *dataInfo;
 {
     if ([segue.identifier isEqualToString:@"Data View"]) {
         JECDataView *destination = segue.destinationViewController;
-        destination.context = [self managedObjectContext];
+        destination.dataInfo = _data[[self.tableView indexPathForSelectedRow].row];
 //        destination.currentEntry =
 //        _notes[[self.tableView indexPathForSelectedRow].row];
     }

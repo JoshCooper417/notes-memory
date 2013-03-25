@@ -36,14 +36,21 @@ MKPointAnnotation *pin;
 }
 
 -(void) viewDidAppear:(BOOL)animated{
-    _name.text = _currentEntry.title;
-    _description.text = _currentEntry.description;
-    pin = [[MKPointAnnotation alloc] init];
-    pin.coordinate = _currentEntry.location.coordinate;
+    _name.text = [_dataInfo valueForKey:@"title"];
+    _description.text = [_dataInfo valueForKey:@"text"];
+   pin = [[MKPointAnnotation alloc] init];
+   NSNumber *lati = [_dataInfo valueForKey:@"latitude"];
+    NSNumber *longi = [_dataInfo valueForKey:@"longitude"];
+    double latitude = [lati doubleValue];
+    double longitude = [longi doubleValue];
+    CLLocationCoordinate2D coordinate;
+    coordinate.longitude = longitude;
+    coordinate.latitude = latitude;
+    pin.coordinate = coordinate;
     [self.map addAnnotation:pin];
-    [self.map setCenterCoordinate:pin.coordinate];
-    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(pin.coordinate, 40, 40);
-    [self.map setRegion:region];
+  [self.map setCenterCoordinate:pin.coordinate];
+   MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(pin.coordinate, 40, 40);
+   [self.map setRegion:region];
     [super viewDidAppear:animated];
     
 }

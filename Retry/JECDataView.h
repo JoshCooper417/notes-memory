@@ -9,14 +9,12 @@
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
 #import <MapKit/MapKit.h>
-#import "JECData.h"
 
-@interface JECDataView : UIViewController <NSFetchedResultsControllerDelegate>
+@interface JECDataView : UIViewController
 
 @property (weak, nonatomic) IBOutlet UITextView *name;
 @property (weak, nonatomic) IBOutlet UITextView *description;
-@property (weak, nonatomic) IBOutlet JECData *currentEntry;
 @property (weak, nonatomic) IBOutlet MKMapView *map;
-@property (nonatomic, strong) NSManagedObjectContext *context;
+@property (nonatomic, strong) NSManagedObject *dataInfo;
 
 @end
