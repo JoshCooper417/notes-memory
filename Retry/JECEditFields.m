@@ -14,6 +14,9 @@
 
 @implementation JECEditFields
 
+NSManagedObject *dataInfo;
+
+
 int stage = 0;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -49,6 +52,9 @@ int stage = 0;
 	// Do any additional setup after loading the view.
     UIImage *pattern = [UIImage imageNamed:@"retina_wood.png"];
     self.view.backgroundColor = [UIColor colorWithPatternImage:pattern];
+    dataInfo = [NSEntityDescription
+                                 insertNewObjectForEntityForName:@"DataInfo"
+                                 inManagedObjectContext:_context];
 }
 
 - (void)didReceiveMemoryWarning
@@ -64,16 +70,23 @@ int stage = 0;
     [self setInstructionsField:nil];
     [super viewDidUnload];
 }
-- (IBAction)submit:(id)sender {
+- (IBAction)submit:(id)sender {    
+   
+    NSError *error;
+    if (![_context save:&error]) {
+        NSLog(@"Whoops, couldn't save: %@", [error localizedDescription]);
+    }
     NSString *text = _EnterTextField.text;
     _EnterTextField.text = @"";
     if(stage == 0){
+    [dataInfo setValue:text forKey:@"title"];
     _currentEntry.title = text;
     _InstructionsField.text = @"What did you do there?";
         stage = 1;
          [_EnterTextField resignFirstResponder];
     }
     else{
+        [dataInfo setValue:text forKey:@"text"];
         _currentEntry.description = text;
          [_EnterTextField resignFirstResponder];
         [self.navigationController popViewControllerAnimated:YES];

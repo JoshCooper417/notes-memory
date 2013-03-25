@@ -11,11 +11,15 @@
 #import "JECData.h"
 
 
-@interface JECEditFields : UIViewController
+@interface JECEditFields : UIViewController <NSFetchedResultsControllerDelegate>
+
+@property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
+@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+
 @property (weak, nonatomic) IBOutlet UITextField *EnterTextField;
 @property (weak, nonatomic) IBOutlet UILabel *InstructionsField;
 - (IBAction)submit:(id)sender;
 @property (weak, nonatomic) IBOutlet JECData *currentEntry;
 @property (nonatomic, strong) CLLocationManager *locationManager;
-
+@property (nonatomic, strong) NSManagedObjectContext *context;
 @end

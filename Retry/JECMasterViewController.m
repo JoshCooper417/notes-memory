@@ -31,17 +31,7 @@ CLLocation *userLoc;
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
  
-    NSManagedObjectContext *context = [self managedObjectContext];
-    NSManagedObject *dataInfo = [NSEntityDescription
-                                       insertNewObjectForEntityForName:@"DataInfo"
-                                       inManagedObjectContext:context];
-    [dataInfo setValue:@"Test title" forKey:@"title"];
-    [dataInfo setValue:@"Testville" forKey:@"text"];
-    NSError *error;
-    if (![context save:&error]) {
-        NSLog(@"Whoops, couldn't save: %@", [error localizedDescription]);
-    }
-    NSLog(@"Here");
+        NSLog(@"Here");
     self.notes = [[NSMutableArray alloc] init];
     [super viewDidLoad];
     UIImage *pattern = [UIImage imageNamed:@"retina_wood.png"];
@@ -55,6 +45,17 @@ CLLocation *userLoc;
 }
 
 -(void) viewDidAppear:(BOOL)animated{
+    NSError *error;
+    NSManagedObjectContext *context = [self managedObjectContext];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription
+                                   entityForName:@"DataInfo" inManagedObjectContext:context];
+    [fetchRequest setEntity:entity];
+    NSArray *fetchedObjects = [context executeFetchRequest:fetchRequest error:&error];
+    for (NSManagedObject *info in fetchedObjects) {
+        NSLog(@"Title: %@", [info valueForKey:@"title"]);
+        NSLog(@"Text: %@", [info valueForKey:@"text"]);
+    }
     [super viewDidAppear:animated];
     [self.tableView reloadData];
 }
@@ -141,6 +142,7 @@ CLLocation *userLoc;
     }
     else if ([segue.identifier isEqualToString:@"Edit Segue"]){
         JECEditFields *destination = segue.destinationViewController;
+        destination.context = [self managedObjectContext];
         destination.currentEntry =
         _notes[[self.tableView indexPathForSelectedRow].row];
     }
