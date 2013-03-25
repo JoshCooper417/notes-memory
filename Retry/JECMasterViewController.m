@@ -18,6 +18,7 @@
 @end
 
 CLLocation *userLoc;
+NSManagedObject *dataInfo;
 
 @implementation JECMasterViewController
 
@@ -32,7 +33,6 @@ CLLocation *userLoc;
 	// Do any additional setup after loading the view, typically from a nib.
     
     NSLog(@"Here");
-    self.notes = [[NSMutableArray alloc] init];
     [super viewDidLoad];
     UIImage *pattern = [UIImage imageNamed:@"retina_wood.png"];
     self.view.backgroundColor = [UIColor colorWithPatternImage:pattern];
@@ -45,6 +45,11 @@ CLLocation *userLoc;
 }
 
 -(void) viewDidAppear:(BOOL)animated{
+    [self setUpData];
+    [super viewDidAppear:animated];
+}
+
+-(void) setUpData{
     NSError *error;
     NSManagedObjectContext *context = [self managedObjectContext];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
@@ -56,7 +61,6 @@ CLLocation *userLoc;
         NSLog(@"Title: %@", [info valueForKey:@"title"]);
         NSLog(@"Text: %@", [info valueForKey:@"text"]);
     }
-    [super viewDidAppear:animated];
     [self.tableView reloadData];
 }
 
@@ -139,14 +143,16 @@ CLLocation *userLoc;
 {
     if ([segue.identifier isEqualToString:@"Data View"]) {
         JECDataView *destination = segue.destinationViewController;
-        destination.currentEntry =
-        _notes[[self.tableView indexPathForSelectedRow].row];
+        destination.context = [self managedObjectContext];
+//        destination.currentEntry =
+//        _notes[[self.tableView indexPathForSelectedRow].row];
     }
     else if ([segue.identifier isEqualToString:@"Edit Segue"]){
         JECEditFields *destination = segue.destinationViewController;
         destination.context = [self managedObjectContext];
-        destination.currentEntry =
-        _notes[[self.tableView indexPathForSelectedRow].row];
+        destination.dataInfo = _data[[self.tableView indexPathForSelectedRow].row];
+//        destination.currentEntry =
+//        _notes[[self.tableView indexPathForSelectedRow].row];
     }
 }
 
@@ -257,12 +263,18 @@ CLLocation *userLoc;
 
 -(void) addNewOne
 {
-    JECData *entry = [[JECData alloc] init];
-    entry.title = @"New Note";
-    entry.assembled = false;
-    [_notes addObject:entry];
-    NSLog(@"array: %d", [self.notes count]);
-    [self.tableView reloadData];
+//    JECData *entry = [[JECData alloc] init];
+//    entry.title = @"New Note";
+//    entry.assembled = false;
+//    //[_notes addObject:entry];
+//  //  NSLog(@"array: %d", [self.notes count]);
+    dataInfo = [NSEntityDescription
+                insertNewObjectForEntityForName:@"DataInfo"
+                inManagedObjectContext:_managedObjectContext];
+    NSLog(@"ADDING A NEW NOTE");
+    [dataInfo setValue:@"New Note" forKey:@"title"];
+    [dataInfo setValue:@"No" forKey:@"assembled"];
+    [self setUpData];
 }
 
 - (IBAction)NewNote:(id)sender {
@@ -274,10 +286,9 @@ CLLocation *userLoc;
 
 - (void)tableView:(UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    JECData *currentEntry =
-    _notes[[self.tableView indexPathForSelectedRow].row];
-    
-    if(!([currentEntry.assembled isEqualToString:@"Yes"])){
+    NSManagedObject *info = _data[indexPath.row];
+    NSString *assembled = [info valueForKey:@"assembled"];
+    if(!([assembled isEqualToString:@"Yes"])){
         [self performSegueWithIdentifier:@"Edit Segue" sender:self];
         
     }
@@ -285,6 +296,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
         [self performSegueWithIdentifier:@"Data View" sender:self];
         
     }
+    
 }
 
 

@@ -22,4 +22,5 @@
 @property (weak, nonatomic) IBOutlet JECData *currentEntry;
 @property (nonatomic, strong) CLLocationManager *locationManager;
 @property (nonatomic, strong) NSManagedObjectContext *context;
+@property (nonatomic, strong) NSManagedObject *dataInfo;
 @end
